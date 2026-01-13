@@ -75,7 +75,7 @@ if prompt := st.chat_input("Fale com o Joel..."):
         )
 
         # NÃO ESQUEÇA DE COLOCAR SUA CHAVE ABAIXO
-        headers = {"Authorization": "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"}
+        headers = {"Authorization": "Bearer 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"}
         payload = {
             "model": "google/gemini-2.0-flash-exp:free",
             "messages": [{"role": "system", "content": instrucao}] + st.session_state.messages
