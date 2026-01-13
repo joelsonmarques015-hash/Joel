@@ -6,7 +6,7 @@ from streamlit_local_storage import LocalStorage
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Joel IA", page_icon="🤖", layout="centered")
 
-# Iniciar o armazenamento local corrigido
+# Iniciar o armazenamento local
 ls = LocalStorage()
 
 # --- SISTEMA DE SENHA ---
@@ -74,8 +74,11 @@ if prompt := st.chat_input("Fale com o Joel..."):
             "Ocasionalmente termine com: 'oh mozão vem falar comigo no zap, tô cheio de saudades ❤️'"
         )
 
-        # NÃO ESQUEÇA DE COLOCAR SUA CHAVE ABAIXO
-        headers = {"Authorization": "Bearer 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"}
+        headers = {
+            "Authorization": "Bearer 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",
+            "Content-Type": "application/json"
+        }
+        
         payload = {
             "model": "google/gemini-2.0-flash-exp:free",
             "messages": [{"role": "system", "content": instrucao}] + st.session_state.messages
@@ -83,11 +86,15 @@ if prompt := st.chat_input("Fale com o Joel..."):
 
         try:
             response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, data=json.dumps(payload))
-            resposta = response.json()['choices'][0]['message']['content']
-            st.markdown(resposta)
-            st.session_state.messages.append({"role": "assistant", "content": resposta})
-            ls.setItem("joel_history", json.dumps(st.session_state.messages))
+            resultado = response.json()
+            
+            if 'choices' in resultado:
+                resposta = resultado['choices'][0]['message']['content']
+                st.markdown(resposta)
+                st.session_state.messages.append({"role": "assistant", "content": resposta})
+                ls.setItem("joel_history", json.dumps(st.session_state.messages))
+            else:
+                st.error(f"Erro do OpenRouter: {resultado}")
         except Exception as e:
-    st.error(f"Erro real: {e}")
-
+            st.error(f"Erro de conexão: {e}")
 
