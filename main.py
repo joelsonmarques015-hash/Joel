@@ -75,7 +75,7 @@ if prompt := st.chat_input("Fale com o Joel..."):
         )
 
         headers = {
-            "Authorization": "Bearer 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",
+            "Authorization": "Bearer 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",
             "Content-Type": "application/json"
         }
         
